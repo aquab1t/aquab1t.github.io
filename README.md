@@ -35,7 +35,14 @@ cd /media/jose/Work/sept/PostDocs
 python3 MASTER/build_portfolio.py
 ```
 
-The layout (CSS) is in `PostDocs/MASTER/portfolio_template.html`. Then commit and push again.
+The layout (CSS) is in `PostDocs/MASTER/portfolio_template.html`. Then publish the change:
+
+```bash
+cd /media/jose/Work/sept/aquab1t.github.io
+git add -A && git commit -m "Update content" && git push
+```
+
+GitHub Pages redeploys in about a minute.
 
 ## Content rules
 
