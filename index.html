@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>José Manuel Echevarría Rubio</title>
+<meta name="description" content="José Manuel Echevarría Rubio, PhD: satellite detection and drift forecasting of pelagic Sargassum, Sentinel-3 OLCI, Sentinel-2 MSI, Landsat 8/9 OLI, Lagrangian and coastal ocean models.">
+<meta property="og:title" content="José Manuel Echevarría Rubio, PhD">
+<meta property="og:description" content="Ocean remote sensing / Machine learning / Drift forecasting">
+<meta property="og:image" content="assets/jose_field.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a chart-room page. One dark-water opener over a real surface-current field,
+   then quiet ruled sections laid out like a field notebook, with figures set in mono like instrument readouts. */
+:root {
+  --paper: #f2f5f3;
+  --paper-2: #e7edea;
+  --ink: #0f2930;
+  --muted: #4b6269;
+  --line: #c9d6d3;
+  --accent: #8f6100;      /* Sargassum amber, darkened for light paper */
+  --water: #0b2c37;       /* opener background */
+  --water-ink: #e9f1ef;
+  --water-muted: #a9c3c2;
+  --particle: #e3a93b;
+  --font-display: "IBM Plex Sans", system-ui, "Segoe UI", sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --measure: 66ch;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0c1d22;
+    --paper-2: #11272d;
+    --ink: #e3ecea;
+    --muted: #9db3b3;
+    --line: #23404a;
+    --accent: #e7b04a;
+    --water: #071820;
+    --water-ink: #e9f1ef;
+    --water-muted: #9fbab9;
+    --particle: #e7b04a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0c1d22;
+  --paper-2: #11272d;
+  --ink: #e3ecea;
+  --muted: #9db3b3;
+  --line: #23404a;
+  --accent: #e7b04a;
+  --water: #071820;
+  --water-ink: #e9f1ef;
+  --water-muted: #9fbab9;
+  --particle: #e7b04a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+a { color: var(--accent); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+img { max-width: 100%; display: block; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; text-wrap: balance; margin: 0; }
+.mono { font-family: var(--font-mono); font-size: 0.82em; letter-spacing: 0.01em; }
+.wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+
+/* ---------- navigation ---------- */
+.nav {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 10px; }
+.nav .brand { font-family: var(--font-display); font-weight: 700; color: var(--ink); text-decoration: none; white-space: nowrap; }
+.nav ul { display: flex; flex-wrap: wrap; gap: 4px 18px; list-style: none; margin: 0; padding: 0; justify-content: flex-end; }
+.nav a.l { color: var(--muted); text-decoration: none; font-family: var(--font-mono); font-size: 0.8rem; }
+.nav a.l:hover { color: var(--accent); }
+
+/* ---------- opener ---------- */
+.opener {
+  position: relative; color: var(--water-ink); overflow: hidden;
+  /* Real surface currents (Copernicus Marine SMOC), shaded by speed with the turbo palette.
+     A static image: no script, nothing to compute after loading. */
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--water) 90%, transparent) 0%,
+      color-mix(in srgb, var(--water) 74%, transparent) 50%,
+      color-mix(in srgb, var(--water) 40%, transparent) 100%),
+    url("assets/currents.webp") center 60% / cover no-repeat,
+    var(--water);
+}
+.opener .readouts { background: color-mix(in srgb, var(--water) 78%, transparent); }
+.opener .wrap {
+  position: relative;
+  display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr);
+  gap: 48px; align-items: center; padding-block: 72px 56px;
+}
+.eyebrow { font-family: var(--font-mono); font-size: 0.8rem; color: var(--particle); letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 18px; }
+.opener h1 { font-size: clamp(2.5rem, 5.6vw, 4.6rem); font-weight: 700; letter-spacing: -0.02em; }
+.opener h1 .deg { font-weight: 500; color: var(--water-muted); }
+.thesis { font-size: clamp(1.15rem, 1.8vw, 1.4rem); max-width: 34ch; margin: 22px 0 28px; color: var(--water-ink); }
+.thesis em { color: var(--particle); font-style: italic; }
+.links { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 14px; border: 1px solid color-mix(in srgb, var(--water-ink) 35%, transparent);
+  border-radius: 3px; color: var(--water-ink); text-decoration: none;
+  font-family: var(--font-mono); font-size: 0.82rem;
+  background: color-mix(in srgb, var(--water) 70%, transparent);
+}
+.btn:hover { border-color: var(--particle); color: var(--particle); }
+.btn.primary { background: var(--particle); color: #1b1300; border-color: var(--particle); font-weight: 600; }
+.btn.primary:hover { color: #1b1300; filter: brightness(1.06); }
+.contact-line { margin-top: 14px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--water-muted); }
+figure.portrait { margin: 0; justify-self: end; max-width: 380px; }
+figure.portrait img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; object-position: 50% 30%; border-radius: 2px; box-shadow: 0 18px 40px rgba(0,0,0,0.35); }
+figure.portrait figcaption { font-family: var(--font-mono); font-size: 0.72rem; color: var(--water-muted); margin-top: 10px; line-height: 1.45; }
+
+/* readouts */
+.readouts { position: relative; border-top: 1px solid color-mix(in srgb, var(--water-ink) 18%, transparent); }
+.opener .readouts .wrap { align-items: start; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; padding-block: 0; }
+.readout { padding: 20px 18px 22px 0; }
+.readout + .readout { padding-left: 18px; border-left: 1px solid color-mix(in srgb, var(--water-ink) 18%, transparent); }
+.readout b { display: block; font-family: var(--font-mono); font-size: clamp(1.3rem, 2.4vw, 1.75rem); font-weight: 600; color: var(--particle); font-variant-numeric: tabular-nums; }
+.readout span { font-size: 0.9rem; color: var(--water-muted); line-height: 1.4; display: block; margin-top: 4px; }
+
+/* ---------- sections ---------- */
+section.block { padding-block: 64px; border-top: 1px solid var(--line); }
+section.block:nth-of-type(even) { background: var(--paper-2); }
+.head { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 32px; align-items: start; }
+.head h2 { font-size: 1.9rem; font-weight: 700; position: sticky; top: 64px; }
+.head h2 small { display: block; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 400; color: var(--muted); margin-top: 8px; letter-spacing: 0.02em; }
+.prose p { max-width: var(--measure); margin: 0 0 1em; }
+
+/* research entries */
+.entries { display: grid; gap: 0; }
+.entry { display: grid; grid-template-columns: minmax(0, 1fr) 170px; gap: 8px 28px; padding: 24px 0; border-top: 1px solid var(--line); }
+.entry:first-child { border-top: 0; padding-top: 0; }
+.entry h3 { font-size: 1.3rem; font-weight: 700; grid-column: 1; }
+.entry .meta { grid-column: 2; grid-row: 1 / span 3; font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+.entry .meta .status { display: inline-block; padding: 2px 7px; border: 1px solid var(--accent); color: var(--accent); border-radius: 2px; margin-bottom: 8px; }
+.entry p { grid-column: 1; margin: 0; max-width: var(--measure); }
+.entry .figs { grid-column: 1; display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink); }
+.entry .figs b { color: var(--accent); font-weight: 600; }
+.entry .refs { grid-column: 1; font-family: var(--font-mono); font-size: 0.78rem; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+
+.also { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--line); }
+.also h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+.also p { margin: 0; font-size: 0.98rem; }
+.also .refs { font-family: var(--font-mono); font-size: 0.76rem; margin-top: 8px; }
+
+/* lists */
+ol.pubs { margin: 0; padding: 0; list-style: none; counter-reset: p; display: grid; gap: 14px; }
+ol.pubs li { counter-increment: p; display: grid; grid-template-columns: 2.2em minmax(0, 1fr); max-width: 78ch; }
+ol.pubs li::before { content: counter(p, decimal-leading-zero); font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); padding-top: 0.25em; }
+.pubs .tag { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); white-space: nowrap; }
+h3.sub { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 28px 0 12px; }
+h3.sub:first-child { margin-top: 0; }
+
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.timeline li { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 20px; }
+.timeline .when { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); padding-top: 0.2em; font-variant-numeric: tabular-nums; }
+.timeline b { font-weight: 600; }
+.timeline .where { color: var(--muted); display: block; font-size: 0.95rem; }
+
+.skills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 36px; }
+.skills h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.skills p { margin: 0; font-size: 0.97rem; }
+
+.plain { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; max-width: 78ch; }
+.plain li { padding-left: 16px; position: relative; }
+.plain li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+
+.contact { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 32px; font-family: var(--font-mono); font-size: 0.88rem; max-width: 720px; }
+.contact dt { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.contact dd { margin: 0 0 12px; overflow-wrap: anywhere; }
+
+footer { border-top: 1px solid var(--line); padding-block: 24px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); }
+
+/* ---------- small screens ---------- */
+@media (max-width: 860px) {
+  .opener .wrap { grid-template-columns: 1fr; gap: 32px; padding-block: 48px 36px; }
+  figure.portrait { justify-self: start; max-width: 300px; }
+  .opener .readouts .wrap { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .readout:nth-child(3) { padding-left: 0; border-left: 0; }
+  .readout:nth-child(n+3) { border-top: 1px solid color-mix(in srgb, var(--water-ink) 18%, transparent); }
+  .head { grid-template-columns: 1fr; gap: 20px; }
+  .head h2 { position: static; }
+  .entry { grid-template-columns: 1fr; }
+  .entry .meta { grid-column: 1; grid-row: auto; }
+  .also { grid-template-columns: 1fr; }
+  .skills, .contact { grid-template-columns: 1fr; }
+  .timeline li { grid-template-columns: 1fr; gap: 2px; }
+  .nav ul { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Sections">
+  <div class="wrap">
+    <a class="brand" href="#top">J. M. Echevarría Rubio</a>
+    <ul>
+      <li><a class="l" href="#research">Research</a></li>
+      <li><a class="l" href="#publications">Publications</a></li>
+      <li><a class="l" href="#software">Software</a></li>
+      <li><a class="l" href="#experience">Experience</a></li>
+      <li><a class="l" href="#outreach">Outreach</a></li>
+      <li><a class="l" href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="opener" id="top">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Ocean remote sensing / Machine learning / Drift forecasting</p>
+      <h1>José Manuel Echevarría Rubio<span class="deg">, PhD</span></h1>
+      <p class="thesis">I find floating <i>Sargassum</i> in satellite images and work out where the ocean will carry it next.</p>
+      <div class="links">
+        <a class="btn primary" href="https://github.com/aquab1t">GitHub</a>
+        <a class="btn" href="https://orcid.org/0009-0003-5332-8683">ORCID</a>
+        <a class="btn" href="https://www.linkedin.com/in/jose-echevarria-aquab1t">LinkedIn</a>
+      </div>
+      <p class="contact-line"><a href="mailto:jechevarriar17@gmail.com">jechevarriar17@gmail.com</a></p>
+    </div>
+    <figure class="portrait">
+      <img src="assets/jose_field.jpg" width="900" height="900" alt="José Manuel Echevarría Rubio crouching on the deck of a survey boat beside a Deep Trekker ROV, wearing a life vest, with the sea and a coastline behind him.">
+      <figcaption>At sea with a Deep Trekker ROV during the Nippon Foundation-POGO Centre of Excellence training, Canada.</figcaption>
+    </figure>
+  </div>
+  <div class="readouts">
+    <div class="wrap">
+      <div class="readout"><b>196,037</b><span>labelled Landsat-8 and Sentinel-2 spectral signatures, released open</span></div>
+      <div class="readout"><b>F1 0.88</b><span>Sentinel-3 OLCI detection on bloom events never seen in training</span></div>
+      <div class="readout"><b>12</b><span>GPS drifters on real Sargassum rafts used to calibrate drift models</span></div>
+      <div class="readout"><b>470</b><span>Sentinel-2 scenes behind a decade of kelp-canopy maps</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section class="block" id="about" aria-labelledby="about-h">
+  <div class="wrap head">
+    <h2 id="about-h">About</h2>
+    <div class="prose">
+      <p>I hold a PhD in Marine Sciences from CICIMAR-IPN in La Paz, Mexico (2026), and came to oceanography from engineering: I trained as an automation engineer and spent five years writing firmware, Linux drivers and embedded systems.</p>
+      <p>Since my MSc I have worked on pelagic <i>Sargassum</i>, the floating brown algae that have bloomed across the tropical Atlantic since 2011 and strand on Caribbean coasts every summer. I build detection algorithms for it across sensors, from Aqua-MODIS to Landsat 8/9 OLI, Sentinel-2 MSI and Sentinel-3 OLCI, and I calibrate Lagrangian drift models against GPS drifters and consecutive satellite images. I also set up coastal ocean models on unstructured meshes to resolve the channels and tides that global models miss. I care about honest validation: testing on bloom events and drifters the model has never seen.</p>
+      <p>In 2024-2025 I trained at the Nippon Foundation-POGO Centre of Excellence in Observational Oceanography in Canada, where I worked on kelp-canopy dynamics with the Hakai Institute and assessed Mexico's ocean-observing data for the Global Ocean Observing System.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="research" aria-labelledby="research-h">
+  <div class="wrap head">
+    <h2 id="research-h">Research<small>detection, drift, drivers</small></h2>
+    <div>
+      <div class="entries">
+        <article class="entry">
+          <h3>Multi-sensor <i>Sargassum</i> detection and fractional cover</h3>
+          <div class="meta"><span class="status">Published</span><br>Landsat 8/9 OLI<br>Sentinel-2 MSI<br>2025</div>
+          <p>A machine and deep learning framework on harmonised Landsat and Sentinel-2 imagery: Landsat reflectance mapped to Sentinel-2 with the HLS coefficients, a spectral library labelled in QGIS from 34 Level-2 scenes, and five classifiers (random forest, k-nearest neighbours, XGBoost, MLP, 1D CNN). Classifier probabilities serve as a sub-pixel fractional-cover proxy, and agreement between the five models flags uncertain detections.</p>
+          <div class="figs"><span>weighted F1 <b>&gt; 0.976</b> on held-out data</span><span><b>11,597</b> Sargassum signatures</span><span><b>12</b> scenes in the agreement analysis</span></div>
+          <div class="refs"><a href="https://doi.org/10.3390/data10110177">Paper, Data 10(11):177</a><a href="https://doi.org/10.5281/zenodo.17246345">Models on Zenodo</a><a href="https://github.com/aquab1t/sargassum-spectral-library">Spectral library</a><a href="https://github.com/aquab1t/sargassum-satellite-ml">Pipeline code</a></div>
+        </article>
+        <article class="entry">
+          <h3>Sargassum in Sentinel-3 OLCI full-resolution imagery</h3>
+          <div class="meta"><span class="status">In preparation</span><br>Sentinel-3 OLCI, 300 m<br>Sentinel-2 MSI check<br>2026</div>
+          <p>At 300 m a <i>Sargassum</i> pixel is mostly water, so index thresholds learn their own false alarms. I labelled the algae by the shape of its anomaly against local water (red edge, NIR plateau, no blue excess), added look-alikes as hard negatives, and trained XGBoost, a 1D CNN and a residual U-Net in PyTorch. TreeSHAP, permutation and forward selection then showed that three bands carry the detection.</p>
+          <div class="figs"><span>U-Net F1 <b>0.88</b>, precision <b>0.95</b> on left-out events</span><span><b>49 / 49</b> manual polygons found</span><span>3 bands (<b>665, 754, 865 nm</b>): F1 0.874</span><span><b>110 → 32 s</b> per scene</span></div>
+        </article>
+        <article class="entry">
+          <h3>Calibrating drift from consecutive satellite images</h3>
+          <div class="meta"><span class="status">In preparation</span><br>Sentinel-3 OLCI<br>6 current products<br>2026</div>
+          <p>Mats break up and re-form between daily overpasses, so matching the same aggregation twice is unreliable. Instead I advect the whole detection field of one image and score how well it lands on the next, discarding particles that end under the second image's clouds and comparing every configuration with a stationary forecast on the same particles. A GPU particle integrator, checked against OpenDrift, makes the search affordable.</p>
+          <div class="figs"><span><b>94</b> overpass pairs, 7 Caribbean events (2018 to 2025)</span><span><b>1,989</b> drift configurations</span><span>separation <b>6.7 → 5.4 km</b></span></div>
+        </article>
+        <article class="entry">
+          <h3>Drift forecasts against drifters on real rafts</h3>
+          <div class="meta"><span class="status">Submitted, JMSE</span><br>OpenDrift<br>OceanParcels<br>2024 to 2026</div>
+          <p>Twelve GPS drifters placed in <i>Sargassum</i> rafts during the NIOZ <i>Weeds of Change</i> expedition (RV <i>Pelagia</i>, 2024) let me separate three sources of forecast error: the tracking framework, the drift parameters and the surface-current product. Under identical forcing, OpenDrift and OceanParcels agree; the current product matters far more. In my thesis, a gradient-boosting correction of the model velocities also raised skill on withheld drifters.</p>
+          <div class="figs"><span>frameworks: <b>+0.630</b> vs <b>+0.626</b></span><span>observation-based current with Ekman: <b>+0.76</b> (+0.69 withheld)</span><span>thesis ML correction: <b>0.53 → 0.75</b> out-of-sample</span></div>
+        </article>
+        <article class="entry">
+          <h3>What drives the blooms, and can we see them coming?</h3>
+          <div class="meta"><span class="status">In preparation</span><br>GLORYS12, PISCES, ERA5<br>2010 to 2022</div>
+          <p>A monthly data cube at 0.25° of ocean physics, nutrients, winds and climate indices, divided into ten Gaussian-mixture regions from source to receiving areas. Mann-Kendall trends and Granger causality show that nutrients lead <i>Sargassum</i> biomass by two to four months, the basis for a proposed seasonal index of bloom risk.</p>
+          <div class="figs"><span><b>10</b> regions</span><span>nutrients lead biomass by <b>2 to 4 months</b></span></div>
+        </article>
+      </div>
+      <div class="also">
+        <div>
+          <h3>A decade of kelp canopy</h3>
+          <p>With Luba Reshitnyk (Hakai Institute): 2D CNNs with separable convolutions and squeeze-and-excitation, mapping kelp across four Northeast Pacific regions from 470 Sentinel-2 scenes (2015 to 2025), and examining how cloud cover and tidal range bias canopy estimates.</p>
+          <div class="refs"><a href="https://github.com/aquab1t/kelp-detection-sentinel2">Code</a></div>
+        </div>
+        <div>
+          <h3>Ocean data for GOOS</h3>
+          <p>Supervised by Dr. Sean Mullan: a FAIR assessment of 39 Mexican sea-level, temperature and salinity datasets, with readiness indices, salinity-observation gaps and a three-year national roadmap.</p>
+        </div>
+        <div>
+          <h3>Ocean fields from sparse gliders</h3>
+          <p>3D reconstruction of ocean fields from sparse glider sections, the entry that won the DeepSense 12th Ocean of Data Challenge in Halifax (2025).</p>
+          <div class="refs"><a href="https://github.com/aquab1t/3d_ocean_geobody">Code</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="publications" aria-labelledby="pub-h">
+  <div class="wrap head">
+    <h2 id="pub-h">Publications</h2>
+    <div>
+      <h3 class="sub">Peer-reviewed</h3>
+      <ol class="pubs" start="1" style="counter-reset: p 0;">
+        <li><div><b>Echevarría-Rubio, J.M.</b>; Martínez-Flores, G.; Morales-Pérez, R.A. (2025). Machine and deep learning framework for <i>Sargassum</i> detection and fractional cover estimation using multi-sensor satellite imagery. <i>Data</i>, 10(11), 177. <a class="mono" href="https://doi.org/10.3390/data10110177">doi:10.3390/data10110177</a></div></li>
+        <li><div>Mullan, S.; Hossain, M.S.; Okyere, O.O.; Diogoul, N.; AbouElmaaty, E.E.; Puthukulangara, P.; Suhita, N.P.A.R.; <b>Echevarría Rubio, J.M.</b>; Cabiguin, M.; Otieno, D.; Alves de Lima, A.J. (2025). Accessible ocean monitoring technologies in developing countries: NF-POGO Global Scholar perspectives on low-cost solutions. <i>The Journal of Ocean Technology</i>. <a class="mono" href="https://doi.org/10.48336/ktd4-k787">doi:10.48336/ktd4-k787</a></div></li>
+      </ol>
+      <h3 class="sub">Submitted and in preparation</h3>
+      <ol class="pubs" start="3" style="counter-reset: p 2;">
+        <li><div><b>Echevarría-Rubio, J.M.</b>; Martínez-Flores, G.; Morales-Pérez, R.A. Pelagic <i>Sargassum</i> drift forecasts with observation-based surface currents: OpenDrift, OceanParcels, and drift-parameter calibration against drifters. <i>Journal of Marine Science and Engineering</i>. <span class="tag">Submitted</span></div></li>
+        <li><div><b>Echevarría-Rubio, J.M.</b> Pelagic <i>Sargassum</i> detection in Sentinel-3 OLCI full-resolution imagery: signature-based labels, a spatial deep network, and how many of the 21 bands are needed. <span class="tag">In preparation</span></div></li>
+        <li><div><b>Echevarría-Rubio, J.M.</b> Calibrating pelagic <i>Sargassum</i> drift from consecutive Sentinel-3 OLCI detection fields with a cloud-aware particle separation score. <span class="tag">In preparation</span></div></li>
+        <li><div><b>Echevarría-Rubio, J.M.</b> Environmental factors controlling pelagic <i>Sargassum</i> proliferation in the Equatorial Atlantic and Caribbean Sea: regime analysis and climate predictability. <span class="tag">In preparation</span></div></li>
+      </ol>
+      <h3 class="sub">Proceedings and reports</h3>
+      <ol class="pubs" start="7" style="counter-reset: p 6;">
+        <li><div><b>Echevarría-Rubio, J.M.</b>; Martínez-Flores, G.; Morales-Pérez, R.A. (2022). Detección y monitoreo de sargazo en el Mar Caribe. <i>Memorias del XX Simposio Internacional SELPER México 2022</i>, AC-SELPER-045.</div></li>
+        <li><div>Martínez-Flores, G.; López-Sillas, D.C.; <b>Echevarría-Rubio, J.M.</b>; Morales-Pérez, R.A. (2020). Monitoreo de sargazo en el Mar Caribe. In <i>Robótica y Computación. Nuevos Avances</i>, TecNM / Instituto Tecnológico de La Paz, pp. 182-185.</div></li>
+        <li><div><b>Echevarría Rubio, J.M.</b>; Reshitnyk, L. (2025). Decadal dynamics of kelp forests in the Northeast Pacific. Research report, NF-POGO Centre of Excellence, Hakai Institute / Dalhousie University.</div></li>
+      </ol>
+      <h3 class="sub">Selected talks and posters</h3>
+      <ul class="plain">
+        <li>Detection of kelp forests using 2D CNN in Sentinel-2 imagery: effect of cloud cover and tidal range on canopy cover underestimation. 3rd Macroalgae Mappers Meeting, Las Cruces, Chile, 2026 (oral).</li>
+        <li><b>Echevarría Rubio, J.M.</b>; Reshitnyk, L. (2025). A decade of kelp forest dynamics in the Northeast Pacific using Sentinel-2 multispectral imagery and machine learning. 6th International Ocean Colour Science Meeting (IOCS-2025), Darmstadt, Germany, 1-4 December (poster #189).</li>
+        <li><b>Echevarría Rubio, J.M.</b> (2025). Pelagic <i>Sargassum</i> detection and Lagrangian transport simulation. IOCS-2025 breakout workshop "Challenges on optical remote sensing for marine litter and floating matter", Darmstadt, Germany (oral).</li>
+        <li>SELPER 2022 (oral) and 2023 (poster); Reunión Anual de la Unión Geofísica Mexicana 2020 (oral).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="software" aria-labelledby="sw-h">
+  <div class="wrap head">
+    <h2 id="sw-h">Software and data</h2>
+    <div>
+      <ul class="plain">
+        <li><a href="https://doi.org/10.5281/zenodo.17246345"><i>Sargassum</i> Fractional Cover Estimation Models (v1.1)</a>, Zenodo, 2025.</li>
+        <li><a href="https://github.com/aquab1t/sargassum-spectral-library">sargassum-spectral-library</a>: 196,037 labelled Landsat-8 OLI and Sentinel-2 MSI signatures.</li>
+        <li><a href="https://github.com/aquab1t/sargassum-satellite-ml">sargassum-satellite-ml</a>: training and classification pipeline for satellite <i>Sargassum</i> detection.</li>
+        <li><a href="https://github.com/aquab1t/kelp-detection-sentinel2">kelp-detection-sentinel2</a>: kelp detection from Sentinel-2 with a 2D CNN.</li>
+        <li><a href="https://github.com/aquab1t/3d_ocean_geobody">3d_ocean_geobody</a>: 3D ocean-field reconstruction from sparse glider data.</li>
+        <li><a href="https://github.com/aquab1t/seabed-mapping-project">seabed-mapping-project</a>: seabed-habitat classification from multibeam bathymetry, backscatter and ROV imagery.</li>
+        <li><a href="https://github.com/aquab1t/odm-dji">odm-dji</a>: OpenDroneMap launcher for DJI drone imagery.</li>
+      </ul>
+      <h3 class="sub">Tools I work with</h3>
+      <div class="skills">
+        <div><h3>Satellite and drone remote sensing</h3><p>Sentinel-3 OLCI (SNAP Rayleigh correction), Aqua-MODIS, Landsat 8/9 OLI, Sentinel-2 MSI; FAI, AFAI and MCI; HLS harmonisation; QA_PIXEL and SCL masking; drone photogrammetry.</p></div>
+        <div><h3>Machine learning</h3><p>PyTorch (GPU), TensorFlow/Keras, scikit-learn, XGBoost; U-Nets, CNNs, gradient boosting; TreeSHAP; leave-one-event-out and leave-one-drifter-out validation.</p></div>
+        <div><h3>Coastal and ocean modelling</h3><p>SCHISM on unstructured triangular meshes: mesh design with a physics-based size function, TPXO10 tidal boundaries with pyTMD, wind forcing and vegetation drag, validated against tide gauges; comparison with a 1/12° global model. OpenDrift and OceanParcels, including a custom OpenDrift reader for SCHISM mesh output and particle fate models (floating, sinking, stranding, decay); Optuna TPE calibration; Copernicus Marine currents, ERA5, WAVERYS; OceanMesh2D and FVCOM; CROCO/ROMS.</p></div>
+        <div><h3>Computing and data</h3><p>Python (xarray, Dask, pandas), R, MATLAB, C/C++, Bash; Linux and HPC; NetCDF, Zarr, HDF5; ERDDAP/OPeNDAP; SQL; QGIS, ArcGIS Pro.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="experience" aria-labelledby="exp-h">
+  <div class="wrap head">
+    <h2 id="exp-h">Experience and education</h2>
+    <div>
+      <ol class="timeline">
+        <li><span class="when">2026</span><div><b>Independent research since the PhD</b><span class="where">Sentinel-3 OLCI detection, satellite-based drift calibration and coastal ocean modelling</span></div></li>
+        <li><span class="when">2022 to 2026</span><div><b>PhD in Marine Sciences</b>, CICIMAR-IPN<span class="where">Dynamics of pelagic <i>Sargassum</i> and the factors controlling its proliferation in the Equatorial Atlantic and Caribbean Sea. Defended 20 August 2026; grade average 9.80/10.</span></div></li>
+        <li><span class="when">2024 to 2025</span><div><b>Nippon Foundation-POGO Centre of Excellence in Observational Oceanography</b><span class="where">10 months, led by Dalhousie University and the Ocean Frontier Institute (Halifax, Nova Scotia) with the Fisheries and Marine Institute of Memorial University (St. John's, Newfoundland and Labrador) and the Hakai Institute (British Columbia). Training cruises with CTD profiling; seabed-habitat classification with multibeam and ROV data.</span></div></li>
+        <li><span class="when">2020 to 2022</span><div><b>MSc in Marine Resources Management</b>, CICIMAR-IPN<span class="where">Detection and monitoring of <i>Sargassum</i> in the Caribbean Sea with Aqua-MODIS and Landsat-8 OLI, and OpenDrift transport simulations. Grade average 9.72/10.</span></div></li>
+        <li><span class="when">2009 to 2015</span><div><b>Automation Engineering</b> (5-year degree), CUJAE, Havana</div></li>
+      </ol>
+      <h3 class="sub">Awards</h3>
+      <ul class="plain">
+        <li><b>1st place</b>, Seatrec "Where's the Monk" float-prediction contest (2026): predicted where a profiling float would surface in the Gulf Stream to within 52 km, the closest of all entries.</li>
+        <li><b>1st place</b>, DeepSense 12th Ocean of Data Challenge "AI in Action", Halifax (2025).</li>
+        <li>IOCCG travel grant to IOCS-2025; NF-POGO Centre of Excellence scholarship (2024-2025); CONACYT MSc and PhD scholarships.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="outreach" aria-labelledby="out-h">
+  <div class="wrap head">
+    <h2 id="out-h">Teaching and outreach</h2>
+    <ul class="plain">
+      <li>Jury member, <a href="https://www.spaceappschallenge.org/2026/local-events/la-paz-mexico/">NASA International Space Apps Challenge 2026</a>, La Paz local event.</li>
+      <li>Panellist, inaugural panel "The experience of competing in hackathons", COSHCYTI Space Week and NASA Space Apps Challenge La Paz, Universidad Autónoma de Baja California Sur (October 2026).</li>
+      <li>Staff member, Clubes de Ciencia México, La Paz, Baja California Sur (2026).</li>
+      <li>Informal mentoring of MSc and PhD students at CICIMAR-IPN in Python, R, satellite image processing and GIS.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="block" id="contact" aria-labelledby="contact-h">
+  <div class="wrap head">
+    <h2 id="contact-h">Contact</h2>
+    <dl class="contact">
+      <div><dt>Email</dt><dd><a href="mailto:jechevarriar17@gmail.com">jechevarriar17@gmail.com</a></dd></div>
+      <div><dt>ORCID</dt><dd><a href="https://orcid.org/0009-0003-5332-8683">0009-0003-5332-8683</a></dd></div>
+      <div><dt>GitHub</dt><dd><a href="https://github.com/aquab1t">github.com/aquab1t</a></dd></div>
+      <div><dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/jose-echevarria-aquab1t">jose-echevarria-aquab1t</a></dd></div>
+      <div><dt>Languages</dt><dd>Spanish (native), English</dd></div>
+    </dl>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">Updated November 2026. Header background: surface current speed in the open central Caribbean Sea (12.7 to 17.6° N, 63 to 71° W) on 15 June 2025 (daily mean), from the E.U. Copernicus Marine Service (global hourly merged surface currents, SMOC, Mercator GLO12).</div>
+</footer>
+
+</body>
+</html>
