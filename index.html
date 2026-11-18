@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>José Manuel Echevarría Rubio</title>
-<meta name="description" content="José Manuel Echevarría Rubio, PhD: satellite detection and drift forecasting of pelagic Sargassum, Sentinel-3 OLCI, Sentinel-2 MSI, Landsat 8/9 OLI, Lagrangian and coastal ocean models.">
+<meta name="description" content="José Manuel Echevarría Rubio, PhD: satellite detection and drift forecasting of pelagic Sargassum, live Sargassum and kelp monitoring services, Sentinel-3 OLCI, Sentinel-2 MSI, Landsat 8/9 OLI, Lagrangian and coastal ocean models.">
 <meta property="og:title" content="José Manuel Echevarría Rubio, PhD">
 <meta property="og:description" content="Ocean remote sensing / Machine learning / Drift forecasting">
 <meta property="og:image" content="assets/jose_field.jpg">
@@ -261,7 +261,7 @@ footer { border-top: 1px solid var(--line); padding-block: 24px; font-family: va
     <h2 id="about-h">About</h2>
     <div class="prose">
       <p>I hold a PhD in Marine Sciences from CICIMAR-IPN in La Paz, Mexico (2026), and came to oceanography from engineering: I trained as an automation engineer and spent five years writing firmware, Linux drivers and embedded systems.</p>
-      <p>Since my MSc I have worked on pelagic <i>Sargassum</i>, the floating brown algae that have bloomed across the tropical Atlantic since 2011 and strand on Caribbean coasts every summer. I build detection algorithms for it across sensors, from Aqua-MODIS to Landsat 8/9 OLI, Sentinel-2 MSI and Sentinel-3 OLCI, and I calibrate Lagrangian drift models against GPS drifters and consecutive satellite images. I also set up coastal ocean models on unstructured meshes to resolve the channels and tides that global models miss. I care about honest validation: testing on bloom events and drifters the model has never seen.</p>
+      <p>Since my MSc I have worked on pelagic <i>Sargassum</i>, the floating brown algae that have bloomed across the tropical Atlantic since 2011 and strand on Caribbean coasts every summer. I build detection algorithms for it across sensors, from Aqua-MODIS to Landsat 8/9 OLI, Sentinel-2 MSI and Sentinel-3 OLCI, and I calibrate Lagrangian drift models against GPS drifters and consecutive satellite images. I also set up coastal ocean models on unstructured meshes to resolve the channels and tides that global models miss. I care about honest validation: testing on bloom events and drifters the model has never seen. Since 2026 I also run two of these methods as live public services: a daily <i>Sargassum</i> detection and drift-forecast monitor for the Mexican Caribbean, and a giant kelp canopy map for the Pacific coast of Baja California.</p>
       <p>In 2024-2025 I trained at the Nippon Foundation-POGO Centre of Excellence in Observational Oceanography in Canada, where I worked on kelp-canopy dynamics with the Hakai Institute and assessed Mexico's ocean-observing data for the Global Ocean Observing System.</p>
     </div>
   </div>
@@ -272,6 +272,20 @@ footer { border-top: 1px solid var(--line); padding-block: 24px; font-family: va
     <h2 id="research-h">Research<small>detection, drift, drivers</small></h2>
     <div>
       <div class="entries">
+        <article class="entry">
+          <h3>Sargassum Monitor: Mexican Caribbean</h3>
+          <div class="meta"><span class="status">Live service</span><br>Sentinel-3 OLCI<br>Sentinel-2 MSI<br>Landsat 8/9 OLI<br>since October 2026</div>
+          <p>An automated public service that puts my detection and drift work into daily operation for the Mexican Caribbean. Each new satellite pass over the exclusive economic zone is processed as soon as it is published: <i>Sargassum</i> fractional cover from Sentinel-3 OLCI (300 m, about 2 h after the pass), Sentinel-2 MSI (10 m, 4 to 9 h) and Landsat 8/9 OLI (30 m). Particles released from each day's detections are then drifted for 7 days with windage and current factors calibrated against drifters, using Copernicus Marine global forecast currents blended with observation-based currents and ECMWF open-data winds, and the map shows where they drift and where they reach the shore. The page is bilingual (English and Spanish), offers the cover maps and trajectories for download, and states its limits: one run per satellite and day without an uncertainty spread, and no tracking of <i>Sargassum</i> outside the Mexican EEZ.</p>
+          <div class="figs"><span><b>3</b> satellites, processed as each pass is published</span><span><b>7-day</b> drift and beaching forecasts</span><span>running since <b>1 October 2026</b></span></div>
+          <div class="refs"><a href="https://sargassum-mx-caribbean.pages.dev/">Open the monitor</a></div>
+        </article>
+        <article class="entry">
+          <h3>Kelp along the Pacific coast of Baja California</h3>
+          <div class="meta"><span class="status">Live service</span><br>Sentinel-2 MSI, 10 m<br>FES2022 tides<br>since July 2026</div>
+          <p>An automated map of giant kelp canopy along the whole Pacific coast of the Baja California peninsula, islands included, updated after every Sentinel-2 pass. A model gives each 10 m pixel a probability of kelp, and a detection is kept only if the same pixel is seen as kelp again within 15 days: single detections are mostly surf, glint or haze, which make up 8 to 15% of detections at the dense beds near 28° N but 80 to 100% south of 27° N, beyond the range of giant kelp. Cloudy and unobserved water is kept apart from "no kelp", so a cloudy pass is not read as a loss. Users can draw any area to get its kelp area per clear pass, the water observed, a moving mean and the tide at each pass (FES2022, 70 coastal points), and can download the series and rasters. Bilingual (English and Spanish).</p>
+          <div class="figs"><span>more than <b>1,000</b> Sentinel-2 tile passes processed</span><span>kelp confirmed by <b>repeat detection</b> within ±15 days</span><span>area time series for <b>any polygon</b> a user draws</span></div>
+          <div class="refs"><a href="https://kelp-baja.pages.dev/">Open the kelp map</a></div>
+        </article>
         <article class="entry">
           <h3>Multi-sensor <i>Sargassum</i> detection and fractional cover</h3>
           <div class="meta"><span class="status">Published</span><br>Landsat 8/9 OLI<br>Sentinel-2 MSI<br>2025</div>
@@ -386,7 +400,7 @@ footer { border-top: 1px solid var(--line); padding-block: 24px; font-family: va
     <h2 id="exp-h">Experience and education</h2>
     <div>
       <ol class="timeline">
-        <li><span class="when">2026</span><div><b>Independent research since the PhD</b><span class="where">Sentinel-3 OLCI detection, satellite-based drift calibration and coastal ocean modelling</span></div></li>
+        <li><span class="when">2026</span><div><b>Independent research since the PhD</b><span class="where">Two live public monitoring services (<i>Sargassum</i> detection and 7-day drift forecasts for the Mexican Caribbean; giant kelp canopy along the Pacific coast of Baja California), Sentinel-3 OLCI detection, satellite-based drift calibration and coastal ocean modelling</span></div></li>
         <li><span class="when">2022 to 2026</span><div><b>PhD in Marine Sciences</b>, CICIMAR-IPN<span class="where">Dynamics of pelagic <i>Sargassum</i> and the factors controlling its proliferation in the Equatorial Atlantic and Caribbean Sea. Defended 20 August 2026; grade average 9.80/10.</span></div></li>
         <li><span class="when">2024 to 2025</span><div><b>Nippon Foundation-POGO Centre of Excellence in Observational Oceanography</b><span class="where">10 months, led by Dalhousie University and the Ocean Frontier Institute (Halifax, Nova Scotia) with the Fisheries and Marine Institute of Memorial University (St. John's, Newfoundland and Labrador) and the Hakai Institute (British Columbia). Training cruises with CTD profiling; seabed-habitat classification with multibeam and ROV data.</span></div></li>
         <li><span class="when">2020 to 2022</span><div><b>MSc in Marine Resources Management</b>, CICIMAR-IPN<span class="where">Detection and monitoring of <i>Sargassum</i> in the Caribbean Sea with Aqua-MODIS and Landsat-8 OLI, and OpenDrift transport simulations. Grade average 9.72/10.</span></div></li>
